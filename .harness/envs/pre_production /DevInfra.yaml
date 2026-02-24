@@ -1,0 +1,13 @@
+infrastructureDefinition:
+  name: cron_infra
+  identifier: cron_infra
+  orgIdentifier: default
+  projectIdentifier: default_project
+  environmentRef: Dev
+  deploymentType: Kubernetes
+  type: KubernetesDirect
+  spec:
+    connectorRef: k8sconnector
+    namespace: cronjob
+    releaseName: release-<+INFRA_KEY_SHORT_ID>
+  allowSimultaneousDeployments: false
