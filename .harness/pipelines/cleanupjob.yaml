@@ -22,12 +22,17 @@ pipeline:
           execution:
             steps:
               - step:
-                  name: Helm Deployment
-                  identifier: helmDeployment
-                  type: HelmDeploy
-                  timeout: 10m
+                  type: K8sApply
+                  name: cronjob
+                  identifier: cronjob
                   spec:
-                    skipDryRun: false
+                    skipDryRun: true
+                    skipSteadyStateCheck: false
+                    skipRendering: false
+                    overrides: []
+                    filePaths:
+                      - cronjob-manifest.yaml
+                  timeout: 10m
             rollbackSteps:
               - step:
                   name: Helm Rollback
