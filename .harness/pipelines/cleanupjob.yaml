@@ -30,8 +30,18 @@ pipeline:
                     skipSteadyStateCheck: false
                     skipRendering: false
                     overrides: []
-                    filePaths:
-                      - cronjob-manifest.yaml
+                    manifestSource:
+                      type: K8sManifest
+                      spec:
+                        store:
+                          type: Github
+                          spec:
+                            connectorRef: ycj_gitconnector
+                            paths:
+                              - cronjob-manifest.yaml
+                            gitFetchType: Branch
+                            branch: main
+                            repoName: Harness_CronJob
                   timeout: 10m
             rollbackSteps:
               - step:
