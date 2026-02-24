@@ -44,3 +44,9 @@ pipeline:
                 - AllErrors
               action:
                 type: StageRollback
+  variables:
+    - name: artifact.image
+      type: String
+      description: ""
+      required: true
+      value: alpine
