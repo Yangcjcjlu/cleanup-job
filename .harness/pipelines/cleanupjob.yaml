@@ -6,50 +6,37 @@ pipeline:
   tags: {}
   stages:
     - stage:
-        name: Deploy
-        identifier: Deploy
+        name: deploy_cronjob
+        identifier: deploy_cronjob
         description: ""
         type: Deployment
         spec:
-          deploymentType: NativeHelm
+          deploymentType: Kubernetes
           service:
-            serviceRef: cronService
+            serviceRef: echoService
           environment:
             environmentRef: Dev
             deployToAll: false
             infrastructureDefinitions:
-              - identifier: K8Scronjobinfra
+              - identifier: cron_infra
           execution:
             steps:
               - step:
-                  type: K8sApply
-                  name: cronjob
-                  identifier: cronjob
-                  spec:
-                    skipDryRun: true
-                    skipSteadyStateCheck: false
-                    skipRendering: false
-                    overrides: []
-                    manifestSource:
-                      type: K8sManifest
-                      spec:
-                        store:
-                          type: Github
-                          spec:
-                            connectorRef: ycj_gitconnector
-                            paths:
-                              - cronjob-manifest.yaml
-                            gitFetchType: Branch
-                            branch: main
-                            repoName: Harness_CronJob
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: K8sRollingDeploy
                   timeout: 10m
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
             rollbackSteps:
               - step:
-                  name: Helm Rollback
-                  identifier: helmRollback
-                  type: HelmRollback
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: K8sRollingRollback
                   timeout: 10m
-                  spec: {}
+                  spec:
+                    pruningEnabled: false
         tags: {}
         failureStrategies:
           - onFailure:
